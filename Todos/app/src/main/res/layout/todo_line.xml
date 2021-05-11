@@ -1,35 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
+    android:descendantFocusability="blocksDescendants"
     >
     <CheckBox
         android:id="@+id/checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
+        android:layout_marginLeft="10dp"
         />
     <TextView
         android:id="@+id/textview_title"
-        android:layout_width="wrap_content"
+        android:layout_width="230dp"
         android:layout_height="wrap_content"
         android:text="Title"
-        android:textSize="30sp"
+        android:textSize="23sp"
         android:textStyle="bold"
-        android:layout_marginLeft="40dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_marginLeft="50dp"
         android:layout_marginTop="10dp"
         />
     <TextView
         android:id="@+id/textview_content"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+        android:layout_width="230dp"
         android:text="Content"
-        android:textSize="24sp"
-        android:layout_marginTop="40dp"
-        android:layout_marginLeft="40dp"
+        android:textSize="18sp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_marginTop="45dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginBottom="5dp"
         />
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src=""
+
+    <Button
+        android:id="@+id/button_delete"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginLeft="300dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/trash"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        app:backgroundTint="#000000" />
 </RelativeLayout>
