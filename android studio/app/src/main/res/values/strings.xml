@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Todos</string>
+    <string name="create">Create a todo</string>
+</resources>
