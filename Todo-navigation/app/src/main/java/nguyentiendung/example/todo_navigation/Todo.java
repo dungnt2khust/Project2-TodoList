@@ -5,15 +5,25 @@ public class Todo {
     String title;
     String content;
     boolean isCheck;
+    boolean favourite;
 
-
-    public Todo() {};
-    public Todo(int id, String title, String content, boolean isCheck) {
+    public Todo(int id, String title, String content, boolean isCheck, boolean favourite) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.isCheck = isCheck;
-    };
+        this.favourite = favourite;
+    }
+
+    public Todo() {};
+
+    public boolean getFavourite() {
+        return favourite;
+    }
+
+    public void setFavourite(boolean favourite) {
+        this.favourite = favourite;
+    }
 
     public int getId() {
         return id;

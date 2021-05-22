@@ -1,16 +1,16 @@
-package nguyentiendung.example.todo_navigation.ui.gallery;
+package nguyentiendung.example.todo_navigation.ui.favourite;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class GalleryViewModel extends ViewModel {
+public class FavouriteViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public GalleryViewModel() {
+    public FavouriteViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("");
+        mText.setValue("This is slideshow fragment");
     }
 
     public LiveData<String> getText() {

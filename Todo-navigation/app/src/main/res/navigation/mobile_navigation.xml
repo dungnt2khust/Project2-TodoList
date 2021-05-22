@@ -13,13 +13,13 @@
 
     <fragment
         android:id="@+id/nav_gallery"
-        android:name="nguyentiendung.example.todo_navigation.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        android:name="nguyentiendung.example.todo_navigation.ui.topic.TopicFragment"
+        android:label="@string/menu_topic"
+        tools:layout="@layout/fragment_topic" />
 
     <fragment
         android:id="@+id/nav_slideshow"
-        android:name="nguyentiendung.example.todo_navigation.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        android:name="nguyentiendung.example.todo_navigation.ui.favourite.FavouriteFragment"
+        android:label="@string/menu_favourite"
+        tools:layout="@layout/fragment_favourite" />
 </navigation>
