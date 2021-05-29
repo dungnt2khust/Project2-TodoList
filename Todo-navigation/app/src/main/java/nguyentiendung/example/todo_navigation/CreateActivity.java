@@ -13,7 +13,8 @@ import android.widget.Toast;
 public class CreateActivity extends AppCompatActivity {
     public final static String EXTRA_CREATE_TITLE = ".project2.example.EXTRA_CREATE_TITLE";
     public final static String EXTRA_CREATE_CONTENT = ".project2.example.EXTRA_CREATE_CONTENT";
-    private EditText edtTitle, edtContent;
+    public final static String EXTRA_CREATE_TOPIC = ".project2.example.EXTRA_CREATE_TOPIC";
+    private EditText edtTitle, edtContent, edtTopic;
     private Button btnCreate;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,17 +33,20 @@ public class CreateActivity extends AppCompatActivity {
     public void reference() {
         edtTitle = (EditText) findViewById(R.id.edittext_title_create);
         edtContent = (EditText) findViewById(R.id.edittext_content_create);
+        edtTopic = (EditText) findViewById(R.id.edittext_topic_create);
         btnCreate = (Button) findViewById(R.id.button_create);
     }
     public void createATodo() {
-        Intent secondIntent = new Intent(CreateActivity.this, MainActivity.class);
+        Intent createIntent = new Intent(CreateActivity.this, MainActivity.class);
         String title = edtTitle.getText().toString();
         String content = edtContent.getText().toString();
+        String topic = edtTopic.getText().toString();
         if (title.isEmpty() == false) {
             content = (content.isEmpty() == true) ? "Empty content" : content;
-            secondIntent.putExtra(EXTRA_CREATE_TITLE, title);
-            secondIntent.putExtra(EXTRA_CREATE_CONTENT, content);
-            setResult(RESULT_OK, secondIntent);
+            createIntent.putExtra(EXTRA_CREATE_TITLE, title);
+            createIntent.putExtra(EXTRA_CREATE_CONTENT, content);
+            createIntent.putExtra(EXTRA_CREATE_TOPIC, topic);
+            setResult(RESULT_OK, createIntent);
             finish();
         }
         else {

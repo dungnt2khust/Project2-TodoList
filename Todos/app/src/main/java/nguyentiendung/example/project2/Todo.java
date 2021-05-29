@@ -1,16 +1,26 @@
 package nguyentiendung.example.project2;
 
 public class Todo {
+    int id;
     String title;
     String content;
-    Boolean isCheck;
+    int isCheck;
 
     public Todo() {};
-    public Todo(String title, String content) {
+    public Todo(int id, String title, String content, int isCheck) {
+        this.id = id;
         this.title = title;
         this.content = content;
-        this.isCheck = false;
+        this.isCheck = isCheck;
     };
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;
@@ -28,11 +38,11 @@ public class Todo {
         this.content = content;
     }
 
-    public Boolean getCheck() {
+    public int getCheck() {
         return isCheck;
     }
 
-    public void setCheck(Boolean check) {
+    public void setCheck(int check) {
         isCheck = check;
     }
 }

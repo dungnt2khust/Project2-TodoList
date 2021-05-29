@@ -1,20 +1,15 @@
-package nguyentiendung.example.todo_navigation.ui.home;
+package nguyentiendung.example.todo_navigation.ui.favourite;
 
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.security.identity.EphemeralPublicKeyNotFoundException;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.PopupMenu;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,13 +17,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.ListFragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import nguyentiendung.example.todo_navigation.CreateActivity;
 import nguyentiendung.example.todo_navigation.Database;
@@ -37,11 +29,12 @@ import nguyentiendung.example.todo_navigation.R;
 import nguyentiendung.example.todo_navigation.Todo;
 import nguyentiendung.example.todo_navigation.TodoAdapter;
 import nguyentiendung.example.todo_navigation.UpdateActivity;
-import nguyentiendung.example.todo_navigation.Utils;
+import nguyentiendung.example.todo_navigation.ui.home.HomeFragment;
+import nguyentiendung.example.todo_navigation.ui.home.HomeViewModel;
 
 import static android.app.Activity.RESULT_OK;
 
-public class HomeFragment extends ListFragment {
+public class FavouriteFragment extends ListFragment {
     public final static String EXTRA_MAIN_TITLE = ".project2.example.EXTRA_MAIN_TITLE";
     public final static String EXTRA_MAIN_CONTENT = ".project2.example.EXTRA_MAIN_CONTENT";
     final static int TEXT_REQUEST_CREATE = 2;
@@ -52,11 +45,12 @@ public class HomeFragment extends ListFragment {
     Database database;
     FloatingActionButton fabNew;
     TodoAdapter todoAdapter;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         fabNew = (FloatingActionButton) root.findViewById(R.id.fab_new);
-        todoAdapter = new TodoAdapter(getContext(), R.layout.todo_line, arrayTodos, HomeFragment.this, null, null);
+        todoAdapter = new TodoAdapter(getContext(), R.layout.todo_line, arrayTodos, null, null, FavouriteFragment.this);
         setListAdapter(todoAdapter);
         getDatabase();
         fabNew.setOnClickListener(new View.OnClickListener() {
@@ -75,17 +69,16 @@ public class HomeFragment extends ListFragment {
         database.QueryData("CREATE TABLE IF NOT EXISTS topic(id INTEGER PRIMARY KEY AUTOINCREMENT, topicname VARCHAR(200) UNIQUE)");
         database.QueryData("CREATE TABLE IF NOT EXISTS todo(id INTEGER PRIMARY KEY AUTOINCREMENT, title VARCHAR(200), content VARCHAR(200), finish INTEGER, favourite INTEGER, topic INTEGER, FOREIGN KEY(topic) REFERENCES topic(id) ON DELETE CASCADE ON UPDATE CASCADE)");
         //database.QueryData("INSERT INTO topic VALUES(null, 'default')");
-        //database.QueryData("DELETE FROM topic WHERE topicname = 'default'");
         //database.QueryData("DROP TABLE todo");
         //database.QueryData("DROP TABLE topic");
-        Cursor dataTodoList = database.GetData("SELECT todo.id, title, content, finish, favourite, topic.topicname, topic.id FROM todo, topic WHERE todo.topic = topic.id");
+        Cursor dataTodoList = database.GetData("SELECT todo.id, title, content, finish, favourite, topic.topicname, topic.id FROM todo, topic WHERE favourite = 1 AND todo.topic = topic.id");
         while (dataTodoList.moveToNext()) {
             int id = dataTodoList.getInt(0);
             String title = dataTodoList.getString(1);
             String content = dataTodoList.getString(2);
             boolean finish = (dataTodoList.getInt(3) == 1);
             boolean favourite = (dataTodoList.getInt(4) == 1);
-            String topic = (dataTodoList.getString(5));
+            String topic = dataTodoList.getString(5);
             int topic_id = dataTodoList.getInt(6);
             Todo todo = new Todo(id, title, content, finish, favourite, topic, topic_id);
             arrayTodos.add(todo);
@@ -99,7 +92,7 @@ public class HomeFragment extends ListFragment {
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch(item.getItemId()) {
+                switch (item.getItemId()) {
                     case R.id.delete:
                         DialogDeleteTodo(arrayTodos.get(position).getTitle(), id, position);
                         break;
@@ -130,10 +123,12 @@ public class HomeFragment extends ListFragment {
         getDatabase();
         todoAdapter.notifyDataSetChanged();
     }
+
     public void launchCreateActivity() {
-        Intent createIntent = new Intent((MainActivity)getActivity(), CreateActivity.class);
+        Intent createIntent = new Intent((MainActivity) getActivity(), CreateActivity.class);
         startActivityForResult(createIntent, TEXT_REQUEST_CREATE);
     }
+
     public void DialogDeleteTodo(final String title, final int id, int position) {
         AlertDialog.Builder dialogDel = new AlertDialog.Builder(getActivity());
         dialogDel.setMessage("Do you want delete this todo ?");
@@ -162,31 +157,9 @@ public class HomeFragment extends ListFragment {
             if (resultCode == RESULT_OK) {
                 String title_create = data.getStringExtra(CreateActivity.EXTRA_CREATE_TITLE);
                 String content_create = data.getStringExtra(CreateActivity.EXTRA_CREATE_CONTENT);
-                String topic_create = data.getStringExtra(CreateActivity.EXTRA_CREATE_TOPIC);
-                if (topic_create == "default" || topic_create.length() == 0) {
-                    database.QueryData("INSERT INTO todo VALUES(null, '" + title_create + "', '" + content_create + "', '" + 0 + "', '" + 0 + "', '" + 1 + "')");
-                } else {
-                    Cursor checkExistTopic = database.GetData("SELECT id FROM topic WHERE topicname = '" + topic_create + "'");
-                    int id_topic = -1;
-                    while (checkExistTopic.moveToNext()) {
-                        id_topic = checkExistTopic.getInt(0);
-                    }
-                    if (id_topic > 0) {
-                        database.QueryData("INSERT INTO todo VALUES(null, '" + title_create + "', '" + content_create + "', '" + 0 + "', '" + 0 + "', '" + id_topic + "')");
-                    } else {
-                        database.QueryData("INSERT INTO topic VALUES(null, '" + topic_create + "')");
-                        Cursor getIdTopic = database.GetData("SELECT id FROM topic WHERE topicname = '" + topic_create + "'");
-                        int id_topic_2 = -1;
-                        while (getIdTopic.moveToNext()) {
-                            id_topic_2 = getIdTopic.getInt(0);
-                        }
-                        database.QueryData("INSERT INTO todo VALUES(null, '" + title_create + "', '" + content_create + "', '" + 0 + "', '" + 0 + "', '" + id_topic_2 + "')");
-                    }
-
-                }
                 //Todo todo = new Todo(1, title_create, content_create, false);
                 //arrayTodos.add(todo);
-
+                database.QueryData("INSERT INTO todo VALUES(null, '" + title_create + "', '" + content_create + "', '" + 0 + "', '" + 0 + "'," + 1 + "')");
                 getDatabase();
                 todoAdapter.notifyDataSetChanged();
             }
@@ -203,18 +176,16 @@ public class HomeFragment extends ListFragment {
             }
         }
     }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.all:
-                arrayTodos.clear();
-                Toast.makeText(getActivity(), "all", Toast.LENGTH_SHORT).show();
                 getDatabase();
                 todoAdapter.notifyDataSetChanged();
                 break;
             case R.id.unfinished:
                 arrayTodos.clear();
-                Toast.makeText(getActivity(), "unfinished", Toast.LENGTH_SHORT).show();
                 Cursor dataTodoListUnfi = database.GetData("SELECT * FROM todo WHERE finish = '0'");
                 while (dataTodoListUnfi.moveToNext()) {
                     int id = dataTodoListUnfi.getInt(0);
@@ -231,7 +202,6 @@ public class HomeFragment extends ListFragment {
                 break;
             case R.id.finished:
                 arrayTodos.clear();
-                Toast.makeText(getActivity(), "finished", Toast.LENGTH_SHORT).show();
                 Cursor dataTodoListFi = database.GetData("SELECT * FROM todo WHERE finish = 1");
                 while (dataTodoListFi.moveToNext()) {
                     int id = dataTodoListFi.getInt(0);

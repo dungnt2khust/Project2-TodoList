@@ -38,13 +38,14 @@
         />
 
     <Button
-        android:id="@+id/button_delete"
-        android:layout_width="35dp"
+        android:id="@+id/button_menu_line"
+        android:layout_width="30dp"
         android:layout_height="35dp"
-        android:layout_marginLeft="300dp"
+        android:layout_marginLeft="315dp"
         android:layout_marginTop="20dp"
-        android:background="@drawable/trash"
+        android:background="@drawable/ic_action_popupmenu"
         android:focusable="false"
         android:focusableInTouchMode="false"
         app:backgroundTint="#000000" />
+
 </RelativeLayout>
