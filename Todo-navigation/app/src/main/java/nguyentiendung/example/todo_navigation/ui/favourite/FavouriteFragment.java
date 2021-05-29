@@ -66,20 +66,21 @@ public class FavouriteFragment extends ListFragment {
         arrayTodos.clear();
         database = new Database(getActivity(), "todolist.sqlite", null, 1);
         //Create table todo
-        //database.QueryData("CREATE TABLE IF NOT EXISTS topic(id INTEGER PRIMARY KEY AUTOINCREMENT, topicname VARCHAR(200) UNIQUE)");//, topic INTEGER FOREIGN KEY REFERENCES topic(id))
-        database.QueryData("CREATE TABLE IF NOT EXISTS todo(id INTEGER PRIMARY KEY AUTOINCREMENT, title VARCHAR(200), content VARCHAR(200), finish INTEGER, favourite INTEGER)");
+        database.QueryData("CREATE TABLE IF NOT EXISTS topic(id INTEGER PRIMARY KEY AUTOINCREMENT, topicname VARCHAR(200) UNIQUE)");
+        database.QueryData("CREATE TABLE IF NOT EXISTS todo(id INTEGER PRIMARY KEY AUTOINCREMENT, title VARCHAR(200), content VARCHAR(200), finish INTEGER, favourite INTEGER, topic INTEGER, FOREIGN KEY(topic) REFERENCES topic(id) ON DELETE CASCADE ON UPDATE CASCADE)");
         //database.QueryData("INSERT INTO topic VALUES(null, 'default')");
-        //database.QueryData("CREATE TABLE IF NOT EXISTS todo(id INTEGER PRIMARY KEY AUTOINCREMENT, title VARCHAR(200), content VARCHAR(200), finish INTEGER)");
         //database.QueryData("DROP TABLE todo");
         //database.QueryData("DROP TABLE topic");
-        Cursor dataTodoList = database.GetData("SELECT * FROM todo WHERE favourite = 1");
+        Cursor dataTodoList = database.GetData("SELECT todo.id, title, content, finish, favourite, topic.topicname, topic.id FROM todo, topic WHERE favourite = 1 AND todo.topic = topic.id");
         while (dataTodoList.moveToNext()) {
             int id = dataTodoList.getInt(0);
             String title = dataTodoList.getString(1);
             String content = dataTodoList.getString(2);
             boolean finish = (dataTodoList.getInt(3) == 1);
             boolean favourite = (dataTodoList.getInt(4) == 1);
-            Todo todo = new Todo(id, title, content, finish, favourite);
+            String topic = dataTodoList.getString(5);
+            int topic_id = dataTodoList.getInt(6);
+            Todo todo = new Todo(id, title, content, finish, favourite, topic, topic_id);
             arrayTodos.add(todo);
         }
         todoAdapter.notifyDataSetChanged();
@@ -158,7 +159,7 @@ public class FavouriteFragment extends ListFragment {
                 String content_create = data.getStringExtra(CreateActivity.EXTRA_CREATE_CONTENT);
                 //Todo todo = new Todo(1, title_create, content_create, false);
                 //arrayTodos.add(todo);
-                database.QueryData("INSERT INTO todo VALUES(null, '" + title_create + "', '" + content_create + "', '" + 0 + "', '" + 0 + "')");
+                database.QueryData("INSERT INTO todo VALUES(null, '" + title_create + "', '" + content_create + "', '" + 0 + "', '" + 0 + "'," + 1 + "')");
                 getDatabase();
                 todoAdapter.notifyDataSetChanged();
             }
@@ -192,7 +193,9 @@ public class FavouriteFragment extends ListFragment {
                     String content = dataTodoListUnfi.getString(2);
                     boolean finish = (dataTodoListUnfi.getInt(3) == 1);
                     boolean favourite = (dataTodoListUnfi.getInt(4) == 1);
-                    Todo todo = new Todo(id, title, content, finish, favourite);
+                    String topic = dataTodoListUnfi.getString(5);
+                    int topic_id = dataTodoListUnfi.getInt(6);
+                    Todo todo = new Todo(id, title, content, finish, favourite, topic, topic_id);
                     arrayTodos.add(todo);
                 }
                 todoAdapter.notifyDataSetChanged();
@@ -206,7 +209,9 @@ public class FavouriteFragment extends ListFragment {
                     String content = dataTodoListFi.getString(2);
                     boolean finish = (dataTodoListFi.getInt(3) == 1);
                     boolean favourite = (dataTodoListFi.getInt(4) == 1);
-                    Todo todo = new Todo(id, title, content, finish, favourite);
+                    String topic = dataTodoListFi.getString(5);
+                    int topic_id = dataTodoListFi.getInt(6);
+                    Todo todo = new Todo(id, title, content, finish, favourite, topic, topic_id);
                     arrayTodos.add(todo);
                 }
                 todoAdapter.notifyDataSetChanged();
