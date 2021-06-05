@@ -24,14 +24,15 @@ public class TodoAdapter extends BaseAdapter {
     private HomeFragment fragmentHome;
     private TopicFragment fragmentTopic;
     private FavouriteFragment fragmentFavourite;
-
-    public TodoAdapter(Context context, int layout, List<Todo> todos, HomeFragment fragmentHome, TopicFragment fragmentTopic, FavouriteFragment fragmentFavourite) {
+    private TopicDetailActivity topicDetailActivity;
+    public TodoAdapter(Context context, int layout, List<Todo> todos, HomeFragment fragmentHome, TopicFragment fragmentTopic, FavouriteFragment fragmentFavourite, TopicDetailActivity topicDetailActivity) {
         this.context = context;
         this.layout = layout;
         this.todos = todos;
         this.fragmentHome = fragmentHome;
         this.fragmentTopic = fragmentTopic;
         this.fragmentFavourite = fragmentFavourite;
+        this.topicDetailActivity = topicDetailActivity;
     }
 
     @Override
@@ -67,8 +68,10 @@ public class TodoAdapter extends BaseAdapter {
             public void onClick(View v) {
                 if (fragmentHome != null)
                     fragmentHome.showMenuLine(v, todoItem.getId(), position);
-                else
+                else if (fragmentFavourite != null)
                     fragmentFavourite.showMenuLine(v, todoItem.getId(), position);
+                else if (topicDetailActivity != null)
+                    topicDetailActivity.showMenuLine(v, todoItem.getId(), position);
             }
         });
 
@@ -83,8 +86,10 @@ public class TodoAdapter extends BaseAdapter {
                 }
                 if (fragmentHome != null)
                     fragmentHome.CheckTodo(check, todoItem.getId(), position);
-                else
+                else if (fragmentFavourite != null)
                     fragmentFavourite.CheckTodo(check, todoItem.getId(), position);
+                else if (topicDetailActivity != null)
+                    topicDetailActivity.CheckTodo(check, todoItem.getId(), position);
             }
         });
 
@@ -100,8 +105,10 @@ public class TodoAdapter extends BaseAdapter {
                 }
                 if (fragmentHome != null)
                     fragmentHome.addFavourite(favourite, todoItem.getId(), position);
-                else
+                else if (fragmentFavourite != null)
                     fragmentFavourite.addFavourite(favourite, todoItem.getId(), position);
+                else if (topicDetailActivity != null)
+                    topicDetailActivity.addFavourite(favourite, todoItem.getId(), position);
             }
         });
        // assign value

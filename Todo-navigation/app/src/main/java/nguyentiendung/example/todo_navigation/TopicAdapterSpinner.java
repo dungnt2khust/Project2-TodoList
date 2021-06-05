@@ -12,17 +12,15 @@ import java.util.List;
 
 import nguyentiendung.example.todo_navigation.ui.topic.TopicFragment;
 
-public class TopicAdapter extends BaseAdapter {
+public class TopicAdapterSpinner extends BaseAdapter {
     private Context context;
     private int layout;
     private List<Topic> topics;
-    TopicFragment topicFragment;
 
-    public TopicAdapter(Context context, int layout, List<Topic> topics, TopicFragment topicFragment) {
+    public TopicAdapterSpinner(Context context, int layout, List<Topic> topics) {
         this.context = context;
         this.layout = layout;
         this.topics = topics;
-        this.topicFragment = topicFragment;
     }
 
     @Override
@@ -44,18 +42,9 @@ public class TopicAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = inflater.inflate(layout, null);
-        TextView txtTopic = (TextView) convertView.findViewById(R.id.title_topic);
-        Button btnMenuLine = (Button) convertView.findViewById(R.id.button_menu_line);
+        TextView txtTopicSpinner = (TextView) convertView.findViewById(R.id.title_topic_spinner);
         final Topic topic = topics.get(position);
-
-        btnMenuLine.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                topicFragment.showMenuLine(v, topic.getTopic_id(), position);
-            }
-        });
-
-        txtTopic.setText(topic.getTopic_name());
+        txtTopicSpinner.setText(topic.getTopic_name());
         return convertView;
     }
 }

@@ -12,12 +12,18 @@ import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.ListFragment;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 
+import nguyentiendung.example.todo_navigation.CreateActivity;
+import nguyentiendung.example.todo_navigation.CreateTopic;
 import nguyentiendung.example.todo_navigation.Database;
+import nguyentiendung.example.todo_navigation.MainActivity;
 import nguyentiendung.example.todo_navigation.R;
 import nguyentiendung.example.todo_navigation.Todo;
 import nguyentiendung.example.todo_navigation.TodoAdapter;
@@ -26,10 +32,14 @@ import nguyentiendung.example.todo_navigation.TopicAdapter;
 import nguyentiendung.example.todo_navigation.TopicDetailActivity;
 import nguyentiendung.example.todo_navigation.UpdateActivity;
 
+import static android.app.Activity.RESULT_OK;
+
 public class TopicFragment extends ListFragment {
     public final static String EXTRA_NAME_TOPIC = ".project2.example.EXTRA_NAME_TOPIC";
     public final static String EXTRA_ID_TOPIC = ".project2.example.EXTRA_ID_TOPIC";
     final static int TEXT_REQUEST_UPDATE_TOPIC = 4;
+    final static int TEXT_REQUEST_CREATE_TOPIC = 5;
+    FloatingActionButton fabNew;
     ArrayList<Topic> arrayTopics = new ArrayList<>();
     Database database;
     int index = -1;
@@ -39,19 +49,12 @@ public class TopicFragment extends ListFragment {
         View root = inflater.inflate(R.layout.fragment_topic, container, false);
         topicAdapter = new TopicAdapter(getContext(), R.layout.topic_line, arrayTopics, TopicFragment.this);
         setListAdapter(topicAdapter);
-
         getDatabase();
         return root;
     }
     public void getDatabase() {
         arrayTopics.clear();
-        database = new Database(getActivity(), "todolist.sqlite", null, 1);
-        //Create table todo
-        database.QueryData("CREATE TABLE IF NOT EXISTS topic(id INTEGER PRIMARY KEY AUTOINCREMENT, topicname VARCHAR(200) UNIQUE)");
-        database.QueryData("CREATE TABLE IF NOT EXISTS todo(id INTEGER PRIMARY KEY AUTOINCREMENT, title VARCHAR(200), content VARCHAR(200), finish INTEGER, favourite INTEGER, topic INTEGER, FOREIGN KEY(topic) REFERENCES topic(id) ON DELETE CASCADE ON UPDATE CASCADE)");
-        //database.QueryData("INSERT INTO topic VALUES(null, 'default')");
-        //database.QueryData("DROP TABLE todo");
-        //database.QueryData("DROP TABLE topic");
+        database = ((MainActivity)getActivity()).getDatabase();
         Cursor dataTodoList = database.GetData("SELECT * FROM topic");
         while (dataTodoList.moveToNext()) {
             int topic_id = dataTodoList.getInt(0);
@@ -61,7 +64,10 @@ public class TopicFragment extends ListFragment {
         }
         topicAdapter.notifyDataSetChanged();
     }
-
+    public void launchCreateTopicActivity() {
+        Intent createIntent = new Intent((MainActivity)getActivity(), CreateTopic.class);
+        startActivityForResult(createIntent, TEXT_REQUEST_CREATE_TOPIC);
+    }
     public void showMenuLine(View view, int id, int position) {
         PopupMenu popupMenu = new PopupMenu(getContext(), view);
         popupMenu.getMenuInflater().inflate(R.menu.menu_line, popupMenu.getMenu());
@@ -82,7 +88,7 @@ public class TopicFragment extends ListFragment {
                         String topic_name = arrayTopics.get(position).getTopic_name();
                         topicIntent.putExtra(EXTRA_ID_TOPIC, topic_id);
                         topicIntent.putExtra(EXTRA_NAME_TOPIC, topic_name);
-                        startActivityForResult(topicIntent, TEXT_REQUEST_UPDATE_TOPIC);
+                        startActivity(topicIntent);
                         break;
                 }
                 return false;
