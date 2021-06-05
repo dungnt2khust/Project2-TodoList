@@ -6,20 +6,40 @@ public class Todo {
     String content;
     boolean isCheck;
     boolean favourite;
+    String time;
+    String location;
     String topic;
     int topic_id;
 
-    public Todo(int id, String title, String content, boolean isCheck, boolean favourite, String topic, int topic_id) {
+    public Todo(int id, String title, String content, boolean isCheck, boolean favourite, String time, String location, String topic, int topic_id) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.isCheck = isCheck;
         this.favourite = favourite;
+        this.time = time;
+        this.location = location;
         this.topic = topic;
         this.topic_id = topic_id;
     }
 
     public Todo() {};
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
 
     public int getTopic_id() {
         return topic_id;

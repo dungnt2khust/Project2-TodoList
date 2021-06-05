@@ -6,58 +6,177 @@
     android:layout_height="match_parent"
     tools:context=".CreateActivity">
 
+    <TextView
+        android:id="@+id/textview_location"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="40dp"
+        android:text="Location"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/edittext_title_create"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textview_time_create" />
+
+    <TextView
+        android:id="@+id/textview_time_create"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="40dp"
+        android:text="Time"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/edittext_title_create"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textview_content_create" />
+
+    <TextView
+        android:id="@+id/textview_content_create"
+        android:layout_width="67dp"
+        android:layout_height="23dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="40dp"
+        android:text="Content"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/edittext_title_create"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textview_title_create" />
+
     <EditText
         android:id="@+id/edittext_topic_create"
-        android:layout_width="250dp"
-        android:layout_height="58dp"
-        android:layout_marginTop="52dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
         android:ems="10"
-        android:hint="Topic"
         android:inputType="textLongMessage"
         android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edittext_content_create" />
+        app:layout_constraintBaseline_toBaselineOf="@+id/textview_topic_name_create"
+        app:layout_constraintEnd_toStartOf="@+id/spinner_topic_create"
+        app:layout_constraintStart_toEndOf="@+id/textview_topic_name_create" />
 
     <EditText
         android:id="@+id/edittext_title_create"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="96dp"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginRight="40dp"
         android:ems="10"
-        android:hint="Title"
         android:inputType="textLongMessage"
         android:textSize="22sp"
         android:textStyle="bold"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textview_title_create"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/textview_title_create" />
 
     <EditText
         android:id="@+id/edittext_content_create"
-        android:layout_width="250dp"
+        android:layout_width="0dp"
         android:layout_height="58dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginRight="40dp"
         android:ems="10"
-        android:hint="Content"
         android:inputType="textLongMessage"
         android:textSize="20sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textview_content_create"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edittext_title_create" />
+        app:layout_constraintStart_toEndOf="@+id/textview_content_create" />
 
     <Button
         android:id="@+id/button_create"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="56dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="30dp"
+        android:backgroundTint="@color/teal_200"
         android:text="Create"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edittext_topic_create" />
+        app:layout_constraintTop_toBottomOf="@+id/edittext_location_create" />
+
+    <EditText
+        android:id="@+id/edittext_time_create"
+        android:layout_width="0dp"
+        android:layout_height="43dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
+        android:ems="10"
+        android:enabled="false"
+        android:hint="Date"
+        android:inputType="textPersonName"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textview_time_create"
+        app:layout_constraintEnd_toStartOf="@+id/imageButton_time_create"
+        app:layout_constraintStart_toEndOf="@+id/textview_time_create" />
+
+    <EditText
+        android:id="@+id/edittext_location_create"
+        android:layout_width="0dp"
+        android:layout_height="44dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginRight="40dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textview_location"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textview_location" />
+
+    <TextView
+        android:id="@+id/textview_topic_name_create"
+        android:layout_width="49dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="52dp"
+        android:text="Topic"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/edittext_topic_create"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textview_title_create"
+        android:layout_width="49dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="40dp"
+        android:text="Title"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/edittext_title_create"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textview_topic_name_create" />
+
+    <ImageButton
+        android:id="@+id/imageButton_time_create"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginRight="40dp"
+        android:background="@android:color/transparent"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edittext_content_create"
+        app:srcCompat="@drawable/calendar" />
+
+    <Spinner
+        android:id="@+id/spinner_topic_create"
+        android:layout_width="50sp"
+        android:layout_height="50sp"
+        android:layout_marginTop="40dp"
+        android:layout_marginRight="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

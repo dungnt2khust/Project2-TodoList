@@ -50,9 +50,10 @@ public class FavouriteFragment extends ListFragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         fabNew = (FloatingActionButton) root.findViewById(R.id.fab_new);
-        todoAdapter = new TodoAdapter(getContext(), R.layout.todo_line, arrayTodos, null, null, FavouriteFragment.this);
+        todoAdapter = new TodoAdapter(getContext(), R.layout.todo_line, arrayTodos, null, null, FavouriteFragment.this, null);
         setListAdapter(todoAdapter);
         getDatabase();
+        setHasOptionsMenu(true);
         fabNew.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,26 +65,9 @@ public class FavouriteFragment extends ListFragment {
 
     public void getDatabase() {
         arrayTodos.clear();
-        database = new Database(getActivity(), "todolist.sqlite", null, 1);
-        //Create table todo
-        database.QueryData("CREATE TABLE IF NOT EXISTS topic(id INTEGER PRIMARY KEY AUTOINCREMENT, topicname VARCHAR(200) UNIQUE)");
-        database.QueryData("CREATE TABLE IF NOT EXISTS todo(id INTEGER PRIMARY KEY AUTOINCREMENT, title VARCHAR(200), content VARCHAR(200), finish INTEGER, favourite INTEGER, topic INTEGER, FOREIGN KEY(topic) REFERENCES topic(id) ON DELETE CASCADE ON UPDATE CASCADE)");
-        //database.QueryData("INSERT INTO topic VALUES(null, 'default')");
-        //database.QueryData("DROP TABLE todo");
-        //database.QueryData("DROP TABLE topic");
-        Cursor dataTodoList = database.GetData("SELECT todo.id, title, content, finish, favourite, topic.topicname, topic.id FROM todo, topic WHERE favourite = 1 AND todo.topic = topic.id");
-        while (dataTodoList.moveToNext()) {
-            int id = dataTodoList.getInt(0);
-            String title = dataTodoList.getString(1);
-            String content = dataTodoList.getString(2);
-            boolean finish = (dataTodoList.getInt(3) == 1);
-            boolean favourite = (dataTodoList.getInt(4) == 1);
-            String topic = dataTodoList.getString(5);
-            int topic_id = dataTodoList.getInt(6);
-            Todo todo = new Todo(id, title, content, finish, favourite, topic, topic_id);
-            arrayTodos.add(todo);
-        }
-        todoAdapter.notifyDataSetChanged();
+        database = ((MainActivity)getActivity()).getDatabase();
+        String getDatabase = "SELECT todo.id, title, content, finish, favourite, time, location, topic.topicname, topic.id FROM todo, topic WHERE favourite = 1 AND todo.topic = topic.id";
+        queryTodos(getDatabase);
     }
 
     public void showMenuLine(View view, int id, int position) {
@@ -181,42 +165,42 @@ public class FavouriteFragment extends ListFragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.all:
+                arrayTodos.clear();
                 getDatabase();
-                todoAdapter.notifyDataSetChanged();
+                Toast.makeText(getActivity(), "All", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.unfinished:
                 arrayTodos.clear();
-                Cursor dataTodoListUnfi = database.GetData("SELECT * FROM todo WHERE finish = '0'");
-                while (dataTodoListUnfi.moveToNext()) {
-                    int id = dataTodoListUnfi.getInt(0);
-                    String title = dataTodoListUnfi.getString(1);
-                    String content = dataTodoListUnfi.getString(2);
-                    boolean finish = (dataTodoListUnfi.getInt(3) == 1);
-                    boolean favourite = (dataTodoListUnfi.getInt(4) == 1);
-                    String topic = dataTodoListUnfi.getString(5);
-                    int topic_id = dataTodoListUnfi.getInt(6);
-                    Todo todo = new Todo(id, title, content, finish, favourite, topic, topic_id);
-                    arrayTodos.add(todo);
-                }
-                todoAdapter.notifyDataSetChanged();
+                String unfinished = "SELECT todo.id, title, content, finish, favourite, time, location, topic.topicname, topic.id FROM todo, topic WHERE todo.topic = topic.id AND finish = 0 AND favourite = 1";
+                queryTodos(unfinished);
+                Toast.makeText(getActivity(), "Unfinished", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.finished:
                 arrayTodos.clear();
-                Cursor dataTodoListFi = database.GetData("SELECT * FROM todo WHERE finish = 1");
-                while (dataTodoListFi.moveToNext()) {
-                    int id = dataTodoListFi.getInt(0);
-                    String title = dataTodoListFi.getString(1);
-                    String content = dataTodoListFi.getString(2);
-                    boolean finish = (dataTodoListFi.getInt(3) == 1);
-                    boolean favourite = (dataTodoListFi.getInt(4) == 1);
-                    String topic = dataTodoListFi.getString(5);
-                    int topic_id = dataTodoListFi.getInt(6);
-                    Todo todo = new Todo(id, title, content, finish, favourite, topic, topic_id);
-                    arrayTodos.add(todo);
-                }
-                todoAdapter.notifyDataSetChanged();
+                String finished = "SELECT todo.id, title, content, finish, favourite, time, location, topic.topicname, topic.id FROM todo, topic WHERE todo.topic = topic.id AND finish = 1 AND favourite = 1";
+                queryTodos(finished);
+                Toast.makeText(getActivity(), "Finished", Toast.LENGTH_SHORT).show();
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void queryTodos(String sql) {
+        arrayTodos.clear();
+        Cursor queryTodo = database.GetData(sql);
+        while (queryTodo.moveToNext()) {
+            int id = queryTodo.getInt(0);
+            String title = queryTodo.getString(1);
+            String content = queryTodo.getString(2);
+            boolean finish = (queryTodo.getInt(3) == 1);
+            boolean favourite = (queryTodo.getInt(4) == 1);
+            String time = queryTodo.getString(5);
+            String location = queryTodo.getString(6);
+            String topic = queryTodo.getString(7);
+            int topic_id = queryTodo.getInt(8);
+            Todo todo = new Todo(id, title, content, finish, favourite, time, location, topic, topic_id);
+            arrayTodos.add(todo);
+        }
+        todoAdapter.notifyDataSetChanged();
     }
 }

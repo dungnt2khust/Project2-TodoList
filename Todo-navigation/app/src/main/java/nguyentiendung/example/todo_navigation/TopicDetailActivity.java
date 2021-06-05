@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -29,6 +30,9 @@ import nguyentiendung.example.todo_navigation.ui.topic.TopicFragment;
 public class TopicDetailActivity extends AppCompatActivity {
     public final static String EXTRA_MAIN_TITLE = ".project2.example.EXTRA_MAIN_TITLE";
     public final static String EXTRA_MAIN_CONTENT = ".project2.example.EXTRA_MAIN_CONTENT";
+    public final static String EXTRA_MAIN_TIME = ".project2.example.EXTRA_MAIN_TIME";
+    public final static String EXTRA_MAIN_LOCATION = ".project2.example.EXTRA_MAIN_LOCATION";
+    public final static String EXTRA_MAIN_TOPIC = ".project2.example.EXTRA_MAIN_TOPIC";
     final static int TEXT_REQUEST_CREATE = 2;
     final static int TEXT_REQUEST_UPDATE = 3;
     int index = -1;
@@ -53,7 +57,7 @@ public class TopicDetailActivity extends AppCompatActivity {
         topic_id = topicIntent.getIntExtra(TopicFragment.EXTRA_ID_TOPIC, 0);
         topic_name = topicIntent.getStringExtra(TopicFragment.EXTRA_NAME_TOPIC);
         txtTopicName.setText(topic_name);
-        todoAdapter = new TodoAdapter(this, R.layout.todo_line, arrayTodos, null, null, null);
+        todoAdapter = new TodoAdapter(this, R.layout.todo_line, arrayTodos, null, null, null, TopicDetailActivity.this);
         lvTopic.setAdapter(todoAdapter);
         getDatabase();
         fabNew.setOnClickListener(new View.OnClickListener() {
@@ -62,30 +66,17 @@ public class TopicDetailActivity extends AppCompatActivity {
                 launchCreateActivity();
             }
         });
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.teal_200)));
     }
     public void getDatabase() {
         arrayTodos.clear();
-        database = new Database(this, "todolist.sqlite", null, 1);
+        //database = mainActivity.getDatabase();
+        database = new Database(TopicDetailActivity.this, "todolist.sqlite", null, 1);
         //Create table todo
         database.QueryData("CREATE TABLE IF NOT EXISTS topic(id INTEGER PRIMARY KEY AUTOINCREMENT, topicname VARCHAR(200) UNIQUE)");
-        database.QueryData("CREATE TABLE IF NOT EXISTS todo(id INTEGER PRIMARY KEY AUTOINCREMENT, title VARCHAR(200), content VARCHAR(200), finish INTEGER, favourite INTEGER, topic INTEGER, FOREIGN KEY(topic) REFERENCES topic(id) ON DELETE CASCADE ON UPDATE CASCADE)");
-        //database.QueryData("INSERT INTO topic VALUES(null, 'default')");
-        //database.QueryData("DELETE FROM topic WHERE topicname = 'default'");
-        //database.QueryData("DROP TABLE todo");
-        //database.QueryData("DROP TABLE topic");
-        Cursor dataTodoList = database.GetData("SELECT todo.id, title, content, finish, favourite, topic.topicname, topic.id FROM todo, topic WHERE todo.topic = topic.id AND topic.id = '" + topic_id + "'");
-        while (dataTodoList.moveToNext()) {
-            int id = dataTodoList.getInt(0);
-            String title = dataTodoList.getString(1);
-            String content = dataTodoList.getString(2);
-            boolean finish = (dataTodoList.getInt(3) == 1);
-            boolean favourite = (dataTodoList.getInt(4) == 1);
-            String topic = (dataTodoList.getString(5));
-            int topic_id = dataTodoList.getInt(6);
-            Todo todo = new Todo(id, title, content, finish, favourite, topic, topic_id);
-            arrayTodos.add(todo);
-        }
-        todoAdapter.notifyDataSetChanged();
+        database.QueryData("CREATE TABLE IF NOT EXISTS todo(id INTEGER PRIMARY KEY AUTOINCREMENT, title VARCHAR(200), content VARCHAR(200), finish INTEGER, favourite INTEGER, time VARCHAR(200), location VARCHAR(200), topic INTEGER, FOREIGN KEY(topic) REFERENCES topic(id) ON DELETE CASCADE ON UPDATE CASCADE)");
+        String getDatabase = "SELECT todo.id, title, content, finish, favourite, time, location, topic.topicname, topic.id FROM todo, topic WHERE todo.topic = topic.id AND topic.id = '" + topic_id + "'";
+        queryTodos(getDatabase);
     }
 
     public void showMenuLine(View view, int id, int position) {
@@ -103,8 +94,14 @@ public class TopicDetailActivity extends AppCompatActivity {
                         Intent updateIntent = new Intent(TopicDetailActivity.this, UpdateActivity.class);
                         String title = arrayTodos.get(position).getTitle();
                         String content = arrayTodos.get(position).getContent();
+                        String topic = arrayTodos.get(position).getTopic();
+                        String time = arrayTodos.get(position).getTime();
+                        String location = arrayTodos.get(position).getLocation();
                         updateIntent.putExtra(EXTRA_MAIN_TITLE, title);
                         updateIntent.putExtra(EXTRA_MAIN_CONTENT, content);
+                        updateIntent.putExtra(EXTRA_MAIN_TOPIC, topic);
+                        updateIntent.putExtra(EXTRA_MAIN_TIME, time);
+                        updateIntent.putExtra(EXTRA_MAIN_LOCATION, location);
                         startActivityForResult(updateIntent, TEXT_REQUEST_UPDATE);
                         break;
                 }
@@ -157,9 +154,30 @@ public class TopicDetailActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 String title_create = data.getStringExtra(CreateActivity.EXTRA_CREATE_TITLE);
                 String content_create = data.getStringExtra(CreateActivity.EXTRA_CREATE_CONTENT);
-                //Todo todo = new Todo(1, title_create, content_create, false);
-                //arrayTodos.add(todo);
-                database.QueryData("INSERT INTO todo VALUES(null, '" + title_create + "', '" + content_create + "', '" + 0 + "', '" + 0 + "', '" + 1 + "')");
+                String topic_create = data.getStringExtra(CreateActivity.EXTRA_CREATE_TOPIC);
+                String time_create = data.getStringExtra(CreateActivity.EXTRA_CREATE_TIME);
+                String location_create = data.getStringExtra(CreateActivity.EXTRA_CREATE_LOCATION);
+                if (topic_create == "default" || topic_create.length() == 0) {
+                    database.QueryData("INSERT INTO todo VALUES(null, '" + title_create + "', '" + content_create + "', '" + 0 + "', '" + 0 + "', '" + time_create + "', '" + location_create + "', '" + 1 + "')");
+                } else {
+                    Cursor checkExistTopic = database.GetData("SELECT id FROM topic WHERE topicname = '" + topic_create + "'");
+                    int id_topic = -1;
+                    while (checkExistTopic.moveToNext()) {
+                        id_topic = checkExistTopic.getInt(0);
+                    }
+                    if (id_topic > 0) {
+                        database.QueryData("INSERT INTO todo VALUES(null, '" + title_create + "', '" + content_create + "', '" + 0 + "', '" + 0 + "', '" + time_create + "', '" + location_create + "', '" + id_topic + "')");
+                    } else {
+                        database.QueryData("INSERT INTO topic VALUES(null, '" + topic_create + "')");
+                        Cursor getIdTopic = database.GetData("SELECT id FROM topic WHERE topicname = '" + topic_create + "'");
+                        int id_topic_2 = -1;
+                        while (getIdTopic.moveToNext()) {
+                            id_topic_2 = getIdTopic.getInt(0);
+                        }
+                        database.QueryData("INSERT INTO todo VALUES(null, '" + title_create + "', '" + content_create + "', '" + 0 + "', '" + 0 + "', '" + time_create + "', '" + location_create + "', '" + id_topic_2 + "')");
+                    }
+
+                }
                 getDatabase();
                 todoAdapter.notifyDataSetChanged();
             }
@@ -168,12 +186,57 @@ public class TopicDetailActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 String title_update = data.getStringExtra(UpdateActivity.EXTRA_UPDATE_TITLE);
                 String content_update = data.getStringExtra(UpdateActivity.EXTRA_UPDATE_CONTENT);
+                String time_update = data.getStringExtra(UpdateActivity.EXTRA_UPDATE_TIME);
+                String location_update = data.getStringExtra(UpdateActivity.EXTRA_UPDATE_LOCATION);
                 //arrayTodos.get(index).setTitle(title_update);
                 //arrayTodos.get(index).setContent(content_update);
-                database.QueryData("UPDATE todo SET title = '" + title_update + "', content = '" + content_update + "' WHERE id = '" + index + "';");
+                database.QueryData("UPDATE todo SET title = '" + title_update + "', content = '" + content_update + "', time = '" + time_update + "', location = '" + location_update + "' WHERE id = '" + index + "';");
                 getDatabase();
                 todoAdapter.notifyDataSetChanged();
             }
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.all:
+                arrayTodos.clear();
+                getDatabase();
+                Toast.makeText(TopicDetailActivity.this, "All", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.unfinished:
+                arrayTodos.clear();
+                String unfinished = "SELECT todo.id, title, content, finish, favourite, time, location, topic.topicname, topic.id FROM todo, topic WHERE todo.topic = topic.id AND finish = 0 AND topic.topicname = '" + topic_name + "'";
+                queryTodos(unfinished);
+                Toast.makeText(TopicDetailActivity.this, "Unfinished", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.finished:
+                arrayTodos.clear();
+                String finished = "SELECT todo.id, title, content, finish, favourite, time, location, topic.topicname, topic.id FROM todo, topic WHERE todo.topic = topic.id AND finish = 1 AND topic.topicname = '" + topic_name + "'";
+                queryTodos(finished);
+                Toast.makeText(TopicDetailActivity.this, "Finished", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void queryTodos(String sql) {
+        arrayTodos.clear();
+        Cursor queryTodo = database.GetData(sql);
+        while (queryTodo.moveToNext()) {
+            int id = queryTodo.getInt(0);
+            String title = queryTodo.getString(1);
+            String content = queryTodo.getString(2);
+            boolean finish = (queryTodo.getInt(3) == 1);
+            boolean favourite = (queryTodo.getInt(4) == 1);
+            String time = queryTodo.getString(5);
+            String location = queryTodo.getString(6);
+            String topic = queryTodo.getString(7);
+            int topic_id = queryTodo.getInt(8);
+            Todo todo = new Todo(id, title, content, finish, favourite, time, location, topic, topic_id);
+            arrayTodos.add(todo);
+        }
+        todoAdapter.notifyDataSetChanged();
     }
 }
