@@ -6,6 +6,59 @@
     android:layout_height="match_parent"
     tools:context=".CreateActivity">
 
+    <EditText
+        android:id="@+id/edittext_date_create"
+        android:layout_width="0dp"
+        android:layout_height="43dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
+        android:ems="10"
+        android:enabled="false"
+        android:inputType="textPersonName"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textview_date_create"
+        app:layout_constraintEnd_toStartOf="@+id/imageButton_time_create"
+        app:layout_constraintStart_toEndOf="@+id/textview_date_create" />
+
+    <TextView
+        android:id="@+id/textview_time_create"
+        android:layout_width="75dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="40dp"
+        android:text="Time"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/edittext_time_create"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textview_date_create" />
+
+    <EditText
+        android:id="@+id/edittext_location_create3"
+        android:layout_width="0dp"
+        android:layout_height="44dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginRight="40dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textview_location"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/textview_location" />
+
+    <EditText
+        android:id="@+id/edittext_location_create2"
+        android:layout_width="0dp"
+        android:layout_height="44dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginRight="40dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textview_location"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/textview_location" />
+
     <TextView
         android:id="@+id/textview_location"
         android:layout_width="0dp"
@@ -21,13 +74,13 @@
         app:layout_constraintTop_toBottomOf="@+id/textview_time_create" />
 
     <TextView
-        android:id="@+id/textview_time_create"
+        android:id="@+id/textview_date_create"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="40dp"
-        android:text="Time"
+        android:text="Date"
         android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/edittext_title_create"
         app:layout_constraintHorizontal_bias="1.0"
@@ -105,20 +158,6 @@
         app:layout_constraintTop_toBottomOf="@+id/edittext_location_create" />
 
     <EditText
-        android:id="@+id/edittext_time_create"
-        android:layout_width="0dp"
-        android:layout_height="43dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginRight="15dp"
-        android:ems="10"
-        android:enabled="false"
-        android:hint="Date"
-        android:inputType="textPersonName"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textview_time_create"
-        app:layout_constraintEnd_toStartOf="@+id/imageButton_time_create"
-        app:layout_constraintStart_toEndOf="@+id/textview_time_create" />
-
-    <EditText
         android:id="@+id/edittext_location_create"
         android:layout_width="0dp"
         android:layout_height="44dp"
@@ -128,6 +167,7 @@
         android:inputType="textPersonName"
         app:layout_constraintBaseline_toBaselineOf="@+id/textview_location"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/textview_location" />
 
     <TextView
@@ -178,5 +218,31 @@
         android:layout_marginRight="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/edittext_time_create"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:ems="10"
+        android:enabled="false"
+        android:inputType="textPersonName"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textview_time_create"
+        app:layout_constraintEnd_toStartOf="@+id/imageButton_time_picker"
+        app:layout_constraintStart_toEndOf="@+id/textview_time_create" />
+
+    <ImageButton
+        android:id="@+id/imageButton_time_picker"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginRight="28dp"
+        android:backgroundTint="@android:color/transparent"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edittext_date_create"
+        app:srcCompat="@drawable/clock" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

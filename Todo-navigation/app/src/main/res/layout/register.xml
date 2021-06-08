@@ -32,7 +32,7 @@ android:orientation="vertical">
     app:layout_constraintTop_toBottomOf="@+id/textview_login" />
 
 <Button
-    android:id="@+id/button_signin"
+    android:id="@+id/button_signup"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginTop="16dp"
