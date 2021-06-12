@@ -9,7 +9,7 @@
     <EditText
         android:id="@+id/edittext_topic_name"
         android:layout_width="258dp"
-        android:layout_height="43dp"
+        android:layout_height="wrap_content"
         android:hint="Topic name"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/button_create_topic"
@@ -24,6 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="444dp"
         android:text="Create"
+        android:backgroundTint="@color/teal_200"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -19,7 +19,6 @@ public class Music extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String ALARM_STATUS = intent.getExtras().getString("ALARM");
-        Log.d("DDUNG", ALARM_STATUS);
         mediaPlayer = MediaPlayer.create(this, R.raw.alarmiphone);
         mediaPlayer.start();
         return super.onStartCommand(intent, flags, startId);

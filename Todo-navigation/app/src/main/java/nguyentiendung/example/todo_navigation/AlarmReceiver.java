@@ -12,7 +12,6 @@ public class AlarmReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Toast.makeText(context, "Alarming...", Toast.LENGTH_SHORT).show();
         String ALARM_STATUS = intent.getExtras().getString("ALARM");
-        Log.d("DDUNG", "onReceive: " + ALARM_STATUS);
         Intent musicIntent = new Intent(context, Music.class);
         musicIntent.putExtra("ALARM", ALARM_STATUS);
         context.startService(musicIntent);

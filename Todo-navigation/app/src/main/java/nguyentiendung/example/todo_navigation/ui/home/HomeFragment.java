@@ -218,30 +218,20 @@ public class HomeFragment extends ListFragment {
         }
     }
     private void Alarm(String time, String date) throws ParseException {
-        //Alarm
-        Date datez = new SimpleDateFormat("dd/MM/yyyy").parse(date);
-        int year = datez.getYear() + 1900;
-        int month = datez.getMonth() + 1;
-        int day = datez.getDate();
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
         int hour = Integer.parseInt(time.substring(0, 2));
         int min = Integer.parseInt(time.substring(3));
         calendar.set(Calendar.HOUR_OF_DAY, hour);
         calendar.set(Calendar.MINUTE, min);
-//        calendar.set(year, month, day);
 
         AlarmManager alarmManager;
         PendingIntent pendingIntent;
 
         alarmManager = (AlarmManager)getActivity().getSystemService(ALARM_SERVICE);
-        Intent intent = new Intent(getContext(), AlarmReceiver.class);
-        intent.putExtra("ALARM", "ON");
+       Intent intent = new Intent(getContext(), AlarmReceiver.class);
         pendingIntent = PendingIntent.getBroadcast(
                 getActivity(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT
         );
-        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-        Log.d("DDUNG", "Alarm: " + calendar.getTimeInMillis());
     }
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -251,12 +241,12 @@ public class HomeFragment extends ListFragment {
                 Toast.makeText(getActivity(), "All", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.unfinished:
-                String unfinished = "SELECT todo.id, title, content, finish, favourite, time, location, topic.topicname, topic.id FROM todo, topic WHERE todo.topic = topic.id AND finish = 0";
+                String unfinished = "SELECT todo.id, title, content, finish, favourite, date, location, time, topic.topicname, topic.id FROM todo, topic WHERE todo.topic = topic.id AND finish = 0";
                 queryTodos(unfinished);
                 Toast.makeText(getActivity(), "Unfinished", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.finished:
-                String finished = "SELECT todo.id, title, content, finish, favourite, time, location, topic.topicname, topic.id FROM todo, topic WHERE todo.topic = topic.id AND finish = 1";
+                String finished = "SELECT todo.id, title, content, finish, favourite, date, location, time, topic.topicname, topic.id FROM todo, topic WHERE todo.topic = topic.id AND finish = 1";
                 queryTodos(finished);
                 Toast.makeText(getActivity(), "Finished", Toast.LENGTH_SHORT).show();
                 break;
