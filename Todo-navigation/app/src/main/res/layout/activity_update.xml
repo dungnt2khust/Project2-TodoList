@@ -8,14 +8,27 @@
 
     <TextView
         android:id="@+id/textView_time_update"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="49dp"
+        android:layout_height="22dp"
         android:layout_marginStart="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="40dp"
         android:text="Time"
         android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/edittext_time_update"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_date_update" />
+
+    <TextView
+        android:id="@+id/textView_date_update"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="40dp"
+        android:text="Date"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/edittext_date_update"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView_content_update" />
@@ -79,7 +92,7 @@
         app:layout_constraintTop_toBottomOf="@+id/imageButton_googlemap" />
 
     <EditText
-        android:id="@+id/edittext_time_update"
+        android:id="@+id/edittext_date_update"
         android:layout_width="0dp"
         android:layout_height="45dp"
         android:layout_marginStart="20dp"
@@ -89,9 +102,9 @@
         android:ems="10"
         android:enabled="false"
         android:inputType="textPersonName"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textView_time_update"
-        app:layout_constraintEnd_toStartOf="@+id/imageButton_time_update"
-        app:layout_constraintStart_toEndOf="@+id/textView_time_update" />
+        app:layout_constraintBaseline_toBaselineOf="@+id/textView_date_update"
+        app:layout_constraintEnd_toStartOf="@+id/imageButton_date_update"
+        app:layout_constraintStart_toEndOf="@+id/textView_date_update" />
 
     <TextView
         android:id="@+id/textView_location_update"
@@ -99,7 +112,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="32dp"
         android:text="Location"
         android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/edittext_location_update"
@@ -145,7 +158,7 @@
         app:srcCompat="@drawable/googlemap" />
 
     <ImageButton
-        android:id="@+id/imageButton_time_update"
+        android:id="@+id/imageButton_date_update"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginTop="24dp"
@@ -170,5 +183,32 @@
         app:layout_constraintHorizontal_bias="0.456"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/edittext_time_update"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textView_time_update"
+        app:layout_constraintEnd_toStartOf="@+id/imageButton_time_update"
+        app:layout_constraintStart_toEndOf="@+id/textView_time_update" />
+
+    <ImageButton
+        android:id="@+id/imageButton_time_update"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginRight="30dp"
+        android:backgroundTint="@android:color/transparent"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edittext_date_update"
+        app:srcCompat="@drawable/clock" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

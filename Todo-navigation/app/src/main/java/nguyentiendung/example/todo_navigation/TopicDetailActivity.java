@@ -33,6 +33,7 @@ public class TopicDetailActivity extends AppCompatActivity {
     public final static String EXTRA_MAIN_TIME = ".project2.example.EXTRA_MAIN_TIME";
     public final static String EXTRA_MAIN_LOCATION = ".project2.example.EXTRA_MAIN_LOCATION";
     public final static String EXTRA_MAIN_TOPIC = ".project2.example.EXTRA_MAIN_TOPIC";
+    public final static String EXTRA_MAIN_DATE = ".project2.example.EXTRA_MAIN_DATE";
     final static int TEXT_REQUEST_CREATE = 2;
     final static int TEXT_REQUEST_UPDATE = 3;
     int index = -1;
@@ -75,7 +76,7 @@ public class TopicDetailActivity extends AppCompatActivity {
         //Create table todo
         database.QueryData("CREATE TABLE IF NOT EXISTS topic(id INTEGER PRIMARY KEY AUTOINCREMENT, topicname VARCHAR(200) UNIQUE)");
         database.QueryData("CREATE TABLE IF NOT EXISTS todo(id INTEGER PRIMARY KEY AUTOINCREMENT, title VARCHAR(200), content VARCHAR(200), finish INTEGER, favourite INTEGER, time VARCHAR(200), location VARCHAR(200), topic INTEGER, FOREIGN KEY(topic) REFERENCES topic(id) ON DELETE CASCADE ON UPDATE CASCADE)");
-        String getDatabase = "SELECT todo.id, title, content, finish, favourite, time, location, topic.topicname, topic.id FROM todo, topic WHERE todo.topic = topic.id AND topic.id = '" + topic_id + "'";
+        String getDatabase = "SELECT todo.id, title, content, finish, favourite, date, location, time, topic.topicname, topic.id FROM todo, topic WHERE todo.topic = topic.id AND topic.id = '" + topic_id + "'";
         queryTodos(getDatabase);
     }
 
@@ -97,11 +98,13 @@ public class TopicDetailActivity extends AppCompatActivity {
                         String topic = arrayTodos.get(position).getTopic();
                         String time = arrayTodos.get(position).getTime();
                         String location = arrayTodos.get(position).getLocation();
+                        String date = arrayTodos.get(position).getDate();
                         updateIntent.putExtra(EXTRA_MAIN_TITLE, title);
                         updateIntent.putExtra(EXTRA_MAIN_CONTENT, content);
                         updateIntent.putExtra(EXTRA_MAIN_TOPIC, topic);
                         updateIntent.putExtra(EXTRA_MAIN_TIME, time);
                         updateIntent.putExtra(EXTRA_MAIN_LOCATION, location);
+                        updateIntent.putExtra(EXTRA_MAIN_DATE, date);
                         startActivityForResult(updateIntent, TEXT_REQUEST_UPDATE);
                         break;
                 }
@@ -147,55 +150,7 @@ public class TopicDetailActivity extends AppCompatActivity {
         dialogDel.show();
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == TEXT_REQUEST_CREATE) {
-            if (resultCode == RESULT_OK) {
-                String title_create = data.getStringExtra(CreateActivity.EXTRA_CREATE_TITLE);
-                String content_create = data.getStringExtra(CreateActivity.EXTRA_CREATE_CONTENT);
-                String topic_create = data.getStringExtra(CreateActivity.EXTRA_CREATE_TOPIC);
-                String time_create = data.getStringExtra(CreateActivity.EXTRA_CREATE_TIME);
-                String location_create = data.getStringExtra(CreateActivity.EXTRA_CREATE_LOCATION);
-                if (topic_create == "default" || topic_create.length() == 0) {
-                    database.QueryData("INSERT INTO todo VALUES(null, '" + title_create + "', '" + content_create + "', '" + 0 + "', '" + 0 + "', '" + time_create + "', '" + location_create + "', '" + 1 + "')");
-                } else {
-                    Cursor checkExistTopic = database.GetData("SELECT id FROM topic WHERE topicname = '" + topic_create + "'");
-                    int id_topic = -1;
-                    while (checkExistTopic.moveToNext()) {
-                        id_topic = checkExistTopic.getInt(0);
-                    }
-                    if (id_topic > 0) {
-                        database.QueryData("INSERT INTO todo VALUES(null, '" + title_create + "', '" + content_create + "', '" + 0 + "', '" + 0 + "', '" + time_create + "', '" + location_create + "', '" + id_topic + "')");
-                    } else {
-                        database.QueryData("INSERT INTO topic VALUES(null, '" + topic_create + "')");
-                        Cursor getIdTopic = database.GetData("SELECT id FROM topic WHERE topicname = '" + topic_create + "'");
-                        int id_topic_2 = -1;
-                        while (getIdTopic.moveToNext()) {
-                            id_topic_2 = getIdTopic.getInt(0);
-                        }
-                        database.QueryData("INSERT INTO todo VALUES(null, '" + title_create + "', '" + content_create + "', '" + 0 + "', '" + 0 + "', '" + time_create + "', '" + location_create + "', '" + id_topic_2 + "')");
-                    }
 
-                }
-                getDatabase();
-                todoAdapter.notifyDataSetChanged();
-            }
-        }
-        if (requestCode == TEXT_REQUEST_UPDATE) {
-            if (resultCode == RESULT_OK) {
-                String title_update = data.getStringExtra(UpdateActivity.EXTRA_UPDATE_TITLE);
-                String content_update = data.getStringExtra(UpdateActivity.EXTRA_UPDATE_CONTENT);
-                String time_update = data.getStringExtra(UpdateActivity.EXTRA_UPDATE_TIME);
-                String location_update = data.getStringExtra(UpdateActivity.EXTRA_UPDATE_LOCATION);
-                //arrayTodos.get(index).setTitle(title_update);
-                //arrayTodos.get(index).setContent(content_update);
-                database.QueryData("UPDATE todo SET title = '" + title_update + "', content = '" + content_update + "', time = '" + time_update + "', location = '" + location_update + "' WHERE id = '" + index + "';");
-                getDatabase();
-                todoAdapter.notifyDataSetChanged();
-            }
-        }
-    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -220,7 +175,55 @@ public class TopicDetailActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == TEXT_REQUEST_CREATE) {
+            if (resultCode == RESULT_OK) {
+                String title_create = data.getStringExtra(CreateActivity.EXTRA_CREATE_TITLE);
+                String content_create = data.getStringExtra(CreateActivity.EXTRA_CREATE_CONTENT);
+                String topic_create = data.getStringExtra(CreateActivity.EXTRA_CREATE_TOPIC);
+                String date_create = data.getStringExtra(CreateActivity.EXTRA_CREATE_DATE);
+                String location_create = data.getStringExtra(CreateActivity.EXTRA_CREATE_LOCATION);
+                String time_create = data.getStringExtra(CreateActivity.EXTRA_CREATE_TIME);
+                if (topic_create == "default" || topic_create.length() == 0) {
+                    database.QueryData("INSERT INTO todo VALUES(null, '" + title_create + "', '" + content_create + "', '" + 0 + "', '" + 0 + "', '" + date_create + "', '" + location_create + "', '" + time_create + "', '" + 1 + "')");
+                } else {
+                    Cursor checkExistTopic = database.GetData("SELECT id FROM topic WHERE topicname = '" + topic_create + "'");
+                    int id_topic = -1;
+                    while (checkExistTopic.moveToNext()) {
+                        id_topic = checkExistTopic.getInt(0);
+                    }
+                    if (id_topic > 0) {
+                        database.QueryData("INSERT INTO todo VALUES(null, '" + title_create + "', '" + content_create + "', '" + 0 + "', '" + 0 + "', '" + date_create + "', '" + location_create + "', '" + time_create + "', '" + id_topic + "')");
+                    } else {
+                        database.QueryData("INSERT INTO topic VALUES(null, '" + topic_create + "')");
+                        Cursor getIdTopic = database.GetData("SELECT id FROM topic WHERE topicname = '" + topic_create + "'");
+                        int id_topic_2 = -1;
+                        while (getIdTopic.moveToNext()) {
+                            id_topic_2 = getIdTopic.getInt(0);
+                        }
+                        database.QueryData("INSERT INTO todo VALUES(null, '" + title_create + "', '" + content_create + "', '" + 0 + "', '" + 0 + "', '" + date_create + "', '" + location_create + "', '" + time_create + "', '" + id_topic_2 + "')");
+                    }
 
+                }
+                getDatabase();
+                todoAdapter.notifyDataSetChanged();
+            }
+        }
+        if (requestCode == TEXT_REQUEST_UPDATE) {
+            if (resultCode == RESULT_OK) {
+                String title_update = data.getStringExtra(UpdateActivity.EXTRA_UPDATE_TITLE);
+                String content_update = data.getStringExtra(UpdateActivity.EXTRA_UPDATE_CONTENT);
+                String time_update = data.getStringExtra(UpdateActivity.EXTRA_UPDATE_TIME);
+                String location_update = data.getStringExtra(UpdateActivity.EXTRA_UPDATE_LOCATION);
+                String date_update = data.getStringExtra(UpdateActivity.EXTRA_UPDATE_DATE);
+                database.QueryData("UPDATE todo SET title = '" + title_update + "', content = '" + content_update + "', time = '" + time_update + "', location = '" + location_update + "', date = '" + date_update + "'  WHERE id = '" + index + "';");
+                getDatabase();
+                todoAdapter.notifyDataSetChanged();
+            }
+        }
+    }
     public void queryTodos(String sql) {
         arrayTodos.clear();
         Cursor queryTodo = database.GetData(sql);
@@ -230,11 +233,12 @@ public class TopicDetailActivity extends AppCompatActivity {
             String content = queryTodo.getString(2);
             boolean finish = (queryTodo.getInt(3) == 1);
             boolean favourite = (queryTodo.getInt(4) == 1);
-            String time = queryTodo.getString(5);
+            String date = queryTodo.getString(5);
             String location = queryTodo.getString(6);
-            String topic = queryTodo.getString(7);
-            int topic_id = queryTodo.getInt(8);
-            Todo todo = new Todo(id, title, content, finish, favourite, time, location, topic, topic_id);
+            String time = queryTodo.getString(7) ;
+            String topic = queryTodo.getString(8);
+            int topic_id = queryTodo.getInt(9);
+            Todo todo = new Todo(id, title, content, finish, favourite, date, location, time, topic, topic_id);
             arrayTodos.add(todo);
         }
         todoAdapter.notifyDataSetChanged();

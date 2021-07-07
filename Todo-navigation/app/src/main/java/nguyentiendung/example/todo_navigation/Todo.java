@@ -6,19 +6,21 @@ public class Todo {
     String content;
     boolean isCheck;
     boolean favourite;
-    String time;
+    String date;
     String location;
+    String time;
     String topic;
     int topic_id;
 
-    public Todo(int id, String title, String content, boolean isCheck, boolean favourite, String time, String location, String topic, int topic_id) {
+    public Todo(int id, String title, String content, boolean isCheck, boolean favourite, String date, String location, String time, String topic, int topic_id) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.isCheck = isCheck;
         this.favourite = favourite;
-        this.time = time;
+        this.date = date;
         this.location = location;
+        this.time = time;
         this.topic = topic;
         this.topic_id = topic_id;
     }
@@ -31,6 +33,14 @@ public class Todo {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public String getLocation() {

@@ -58,7 +58,8 @@ public class TodoAdapter extends BaseAdapter {
         // reference
         final Todo todoItem = todos.get(position);
         TextView txtTitle = (TextView) convertView.findViewById(R.id.textview_title);
-        TextView txtContent = (TextView) convertView.findViewById(R.id.textview_content);
+        TextView txtTime = (TextView) convertView.findViewById(R.id.textview_time);
+        TextView txtDate = (TextView) convertView.findViewById(R.id.textview_date);
         CheckBox cb = (CheckBox) convertView.findViewById(R.id.checkbox);
         Button btnMenuLine = (Button) convertView.findViewById(R.id.button_menu_line);
         ImageButton imgbtnStar = (ImageButton) convertView.findViewById(R.id.imgbtn_star);
@@ -114,7 +115,8 @@ public class TodoAdapter extends BaseAdapter {
        // assign value
         Todo todo = todos.get(position);
         txtTitle.setText(todo.getTitle());
-        txtContent.setText(todo.getContent());
+        txtTime.setText(todo.getTime());
+        txtDate.setText(todo.getDate());
         cb.setChecked(todo.getCheck());
         if (todo.getFavourite()) {
             imgbtnStar.setImageResource(R.drawable.starclicked);

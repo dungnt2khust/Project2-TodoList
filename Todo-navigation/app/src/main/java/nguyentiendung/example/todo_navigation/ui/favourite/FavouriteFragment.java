@@ -33,6 +33,10 @@ import nguyentiendung.example.todo_navigation.ui.home.HomeFragment;
 import nguyentiendung.example.todo_navigation.ui.home.HomeViewModel;
 
 import static android.app.Activity.RESULT_OK;
+import static nguyentiendung.example.todo_navigation.ui.home.HomeFragment.EXTRA_MAIN_DATE;
+import static nguyentiendung.example.todo_navigation.ui.home.HomeFragment.EXTRA_MAIN_LOCATION;
+import static nguyentiendung.example.todo_navigation.ui.home.HomeFragment.EXTRA_MAIN_TIME;
+import static nguyentiendung.example.todo_navigation.ui.home.HomeFragment.EXTRA_MAIN_TOPIC;
 
 public class FavouriteFragment extends ListFragment {
     public final static String EXTRA_MAIN_TITLE = ".project2.example.EXTRA_MAIN_TITLE";
@@ -66,7 +70,7 @@ public class FavouriteFragment extends ListFragment {
     public void getDatabase() {
         arrayTodos.clear();
         database = ((MainActivity)getActivity()).getDatabase();
-        String getDatabase = "SELECT todo.id, title, content, finish, favourite, time, location, topic.topicname, topic.id FROM todo, topic WHERE favourite = 1 AND todo.topic = topic.id";
+        String getDatabase = "SELECT todo.id, title, content, finish, favourite, date, location, time, topic.topicname, topic.id FROM todo, topic WHERE favourite = 1 AND todo.topic = topic.id";
         queryTodos(getDatabase);
     }
 
@@ -76,7 +80,7 @@ public class FavouriteFragment extends ListFragment {
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
+                switch(item.getItemId()) {
                     case R.id.delete:
                         DialogDeleteTodo(arrayTodos.get(position).getTitle(), id, position);
                         break;
@@ -85,8 +89,16 @@ public class FavouriteFragment extends ListFragment {
                         Intent updateIntent = new Intent(getContext(), UpdateActivity.class);
                         String title = arrayTodos.get(position).getTitle();
                         String content = arrayTodos.get(position).getContent();
+                        String topic = arrayTodos.get(position).getTopic();
+                        String time = arrayTodos.get(position).getTime();
+                        String location = arrayTodos.get(position).getLocation();
+                        String date = arrayTodos.get(position).getDate();
                         updateIntent.putExtra(EXTRA_MAIN_TITLE, title);
                         updateIntent.putExtra(EXTRA_MAIN_CONTENT, content);
+                        updateIntent.putExtra(EXTRA_MAIN_TOPIC, topic);
+                        updateIntent.putExtra(EXTRA_MAIN_TIME, time);
+                        updateIntent.putExtra(EXTRA_MAIN_LOCATION, location);
+                        updateIntent.putExtra(EXTRA_MAIN_DATE, date);
                         startActivityForResult(updateIntent, TEXT_REQUEST_UPDATE);
                         break;
                 }
@@ -141,9 +153,31 @@ public class FavouriteFragment extends ListFragment {
             if (resultCode == RESULT_OK) {
                 String title_create = data.getStringExtra(CreateActivity.EXTRA_CREATE_TITLE);
                 String content_create = data.getStringExtra(CreateActivity.EXTRA_CREATE_CONTENT);
-                //Todo todo = new Todo(1, title_create, content_create, false);
-                //arrayTodos.add(todo);
-                database.QueryData("INSERT INTO todo VALUES(null, '" + title_create + "', '" + content_create + "', '" + 0 + "', '" + 0 + "'," + 1 + "')");
+                String topic_create = data.getStringExtra(CreateActivity.EXTRA_CREATE_TOPIC);
+                String date_create = data.getStringExtra(CreateActivity.EXTRA_CREATE_DATE);
+                String location_create = data.getStringExtra(CreateActivity.EXTRA_CREATE_LOCATION);
+                String time_create = data.getStringExtra(CreateActivity.EXTRA_CREATE_TIME);
+                if (topic_create == "default" || topic_create.length() == 0) {
+                    database.QueryData("INSERT INTO todo VALUES(null, '" + title_create + "', '" + content_create + "', '" + 0 + "', '" + 0 + "', '" + date_create + "', '" + location_create + "', '" + time_create + "', '" + 1 + "')");
+                } else {
+                    Cursor checkExistTopic = database.GetData("SELECT id FROM topic WHERE topicname = '" + topic_create + "'");
+                    int id_topic = -1;
+                    while (checkExistTopic.moveToNext()) {
+                        id_topic = checkExistTopic.getInt(0);
+                    }
+                    if (id_topic > 0) {
+                        database.QueryData("INSERT INTO todo VALUES(null, '" + title_create + "', '" + content_create + "', '" + 0 + "', '" + 0 + "', '" + date_create + "', '" + location_create + "', '" + time_create + "', '" + id_topic + "')");
+                    } else {
+                        database.QueryData("INSERT INTO topic VALUES(null, '" + topic_create + "')");
+                        Cursor getIdTopic = database.GetData("SELECT id FROM topic WHERE topicname = '" + topic_create + "'");
+                        int id_topic_2 = -1;
+                        while (getIdTopic.moveToNext()) {
+                            id_topic_2 = getIdTopic.getInt(0);
+                        }
+                        database.QueryData("INSERT INTO todo VALUES(null, '" + title_create + "', '" + content_create + "', '" + 0 + "', '" + 0 + "', '" + date_create + "', '" + location_create + "', '" + time_create + "', '" + id_topic_2 + "')");
+                    }
+
+                }
                 getDatabase();
                 todoAdapter.notifyDataSetChanged();
             }
@@ -152,9 +186,10 @@ public class FavouriteFragment extends ListFragment {
             if (resultCode == RESULT_OK) {
                 String title_update = data.getStringExtra(UpdateActivity.EXTRA_UPDATE_TITLE);
                 String content_update = data.getStringExtra(UpdateActivity.EXTRA_UPDATE_CONTENT);
-                //arrayTodos.get(index).setTitle(title_update);
-                //arrayTodos.get(index).setContent(content_update);
-                database.QueryData("UPDATE todo SET title = '" + title_update + "', content = '" + content_update + "' WHERE id = '" + index + "';");
+                String time_update = data.getStringExtra(UpdateActivity.EXTRA_UPDATE_TIME);
+                String location_update = data.getStringExtra(UpdateActivity.EXTRA_UPDATE_LOCATION);
+                String date_update = data.getStringExtra(UpdateActivity.EXTRA_UPDATE_DATE);
+                database.QueryData("UPDATE todo SET title = '" + title_update + "', content = '" + content_update + "', time = '" + time_update + "', location = '" + location_update + "', date = '" + date_update + "'  WHERE id = '" + index + "';");
                 getDatabase();
                 todoAdapter.notifyDataSetChanged();
             }
@@ -194,11 +229,12 @@ public class FavouriteFragment extends ListFragment {
             String content = queryTodo.getString(2);
             boolean finish = (queryTodo.getInt(3) == 1);
             boolean favourite = (queryTodo.getInt(4) == 1);
-            String time = queryTodo.getString(5);
+            String date = queryTodo.getString(5);
             String location = queryTodo.getString(6);
-            String topic = queryTodo.getString(7);
-            int topic_id = queryTodo.getInt(8);
-            Todo todo = new Todo(id, title, content, finish, favourite, time, location, topic, topic_id);
+            String time = queryTodo.getString(7) ;
+            String topic = queryTodo.getString(8);
+            int topic_id = queryTodo.getInt(9);
+            Todo todo = new Todo(id, title, content, finish, favourite, date, location, time, topic, topic_id);
             arrayTodos.add(todo);
         }
         todoAdapter.notifyDataSetChanged();

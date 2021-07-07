@@ -3,8 +3,10 @@ package nguyentiendung.example.todo_navigation;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +16,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
@@ -24,13 +27,14 @@ import nguyentiendung.example.todo_navigation.ui.home.HomeFragment;
 public class UpdateActivity extends AppCompatActivity {
     public final static String EXTRA_UPDATE_TITLE = ".project2.example.EXTRA_UPDATE_TITLE";
     public final static String EXTRA_UPDATE_CONTENT = ".project2.example.EXTRA_UPDATE_CONTENT";
-    public final static String EXTRA_UPDATE_TIME = ".project2.example.EXTRA_UPDATE_TIME";
+    public final static String EXTRA_UPDATE_DATE = ".project2.example.EXTRA_UPDATE_DATE";
     public final static String EXTRA_UPDATE_LOCATION = ".project2.example.EXTRA_UPDATE_LOCATION";
+    public final static String EXTRA_UPDATE_TIME = ".project2.example.EXTRA_UPDATE_TIME";
     Intent updateIntent;
     TextView txtTopicName;
-    private EditText edtTitle, edtContent, edtTime, edtLocation;
+    private EditText edtTitle, edtContent, edtDate, edtLocation, edtTime;
     private Button btnUpdate;
-    private ImageButton imgbtnGoogleMap, imgbtnTime;
+    private ImageButton imgbtnGoogleMap, imgbtnTime, imgbtnTimePicker;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +48,7 @@ public class UpdateActivity extends AppCompatActivity {
         edtTime.setText(updateIntent.getStringExtra(HomeFragment.EXTRA_MAIN_TIME));
         edtLocation.setText(updateIntent.getStringExtra(HomeFragment.EXTRA_MAIN_LOCATION));
         txtTopicName.setText(updateIntent.getStringExtra(HomeFragment.EXTRA_MAIN_TOPIC));
-
+        edtDate.setText(updateIntent.getStringExtra(HomeFragment.EXTRA_MAIN_DATE));
         String loc = edtLocation.getText().toString();
         btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,6 +70,12 @@ public class UpdateActivity extends AppCompatActivity {
                 pickADate();
             }
         });
+        imgbtnTimePicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pickATime();
+            }
+        });
     }
 
     public void reference() {
@@ -73,10 +83,12 @@ public class UpdateActivity extends AppCompatActivity {
         edtContent = (EditText) findViewById(R.id.edittext_content_update);
         edtTime = (EditText) findViewById(R.id.edittext_time_update);
         edtLocation = (EditText) findViewById(R.id.edittext_location_update);
+        edtDate = (EditText) findViewById(R.id.edittext_date_update);
         txtTopicName = (TextView) findViewById(R.id.textview_topic_name_update);
         imgbtnGoogleMap = (ImageButton) findViewById(R.id.imageButton_googlemap);
-        imgbtnTime = (ImageButton) findViewById(R.id.imageButton_time_update);
+        imgbtnTime = (ImageButton) findViewById(R.id.imageButton_date_update);
         btnUpdate = (Button) findViewById(R.id.button_update);
+        imgbtnTimePicker = (ImageButton) findViewById(R.id.imageButton_time_update);
     }
 
     public void updateATodo() {
@@ -85,12 +97,14 @@ public class UpdateActivity extends AppCompatActivity {
         String content = edtContent.getText().toString();
         String time = edtTime.getText().toString();
         String location = edtLocation.getText().toString();
+        String date = edtDate.getText().toString();
         if (title.isEmpty() == false) {
             content = (content.isEmpty() == true) ? "" : content;
             intent.putExtra(EXTRA_UPDATE_TITLE, title);
             intent.putExtra(EXTRA_UPDATE_CONTENT, content);
             intent.putExtra(EXTRA_UPDATE_TIME, time);
             intent.putExtra(EXTRA_UPDATE_LOCATION, location);
+            intent.putExtra(EXTRA_UPDATE_DATE, date);
             setResult(RESULT_OK, intent);
             finish();
         }
@@ -125,9 +139,36 @@ public class UpdateActivity extends AppCompatActivity {
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 calendar.set(year, month, dayOfMonth);
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                edtTime.setText(simpleDateFormat.format(calendar.getTime()));
+                edtDate.setText(simpleDateFormat.format(calendar.getTime()));
             }
         }, yearz, monthz, dayz);
         datePickerDialog.show();
     }
+    private void pickATime() {
+        boolean is24HView = true;
+        Calendar calendar = Calendar.getInstance();
+        int selectHour = calendar.get(Calendar.HOUR);
+        int selectMin = calendar.get(Calendar.MINUTE);
+
+        final int[] lastSelectedHour = {selectHour};
+        final int[] lastSelectedMinute = {selectMin};
+        TimePickerDialog.OnTimeSetListener timeSetListener = new TimePickerDialog.OnTimeSetListener() {
+
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                String hourModify = (hourOfDay >= 10) ? ("" + hourOfDay) : ("0" + hourOfDay);
+                String minuteModify = (minute >= 10) ? ("" + minute) : ("0" + minute);
+                edtTime.setText(hourModify + ":" + minuteModify);
+                lastSelectedHour[0] = hourOfDay;
+                lastSelectedMinute[0] = minute;
+            }
+        };
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+                android.R.style.Theme_Holo_Light_Dialog_NoActionBar,
+                timeSetListener, lastSelectedHour[0], lastSelectedMinute[0], is24HView);
+
+        timePickerDialog.show();
+    }
+
 }

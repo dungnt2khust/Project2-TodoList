@@ -24,16 +24,25 @@
         android:layout_marginTop="10dp"
         />
     <TextView
-        android:id="@+id/textview_content"
+        android:id="@+id/textview_time"
         android:layout_height="wrap_content"
         android:layout_width="230dp"
-        android:text="Content"
+        android:text="Time"
         android:textSize="18sp"
         android:ellipsize="end"
         android:maxLines="1"
         android:layout_marginTop="45dp"
         android:layout_marginLeft="50dp"
         android:layout_marginBottom="5dp"
+        />
+    <TextView
+        android:id="@+id/textview_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Date"
+        android:textSize="18sp"
+        android:layout_marginTop="45dp"
+        android:layout_marginLeft="115dp"
         />
 
     <ImageButton
