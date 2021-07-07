@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Todos</string>
+    <string name="create">Create a todo</string>
+    <string name="update">Update a todo</string>
+</resources>
